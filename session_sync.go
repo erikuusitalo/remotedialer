@@ -74,6 +74,9 @@ func newSyncConnectionsTopMessage(top int64, connectionIDs []int64) *message {
 // sendSyncConnections sends a binary message of type SyncConnections or SyncConnectionsTop, depending on the negotiated
 // protocol version, whose payload is a list of the active connection IDs for this session
 func (s *Session) sendSyncConnections() error {
+	s.syncLock.Lock()
+	defer s.syncLock.Unlock()
+
 	activeIDs, top := s.activeConnectionIDs()
 
 	msg := newSyncConnectionsMessage(activeIDs)

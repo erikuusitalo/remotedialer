@@ -34,6 +34,7 @@ type Session struct {
 	maxSeenConnID    int64
 	protocolVersion  int
 	connectLock      sync.Mutex
+	syncLock         sync.RWMutex
 }
 
 // Use this defined type so we can share context between remotedialer and its clients

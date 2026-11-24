@@ -116,6 +116,10 @@ func (s *Session) syncConnections(r io.Reader, withTop bool) error {
 // closeConnection removes a connection for a given ID from the session, sending an error message to communicate the closing to the other end.
 // If an error is not provided, io.EOF will be used instead.
 func (s *Session) closeConnection(connID int64, err error) {
+	// Prevents a SyncConnections message from being sent before the one closing the connection
+	s.syncLock.RLock()
+	defer s.syncLock.RUnlock()
+
 	if conn := s.removeConnection(connID); conn != nil {
 		conn.tunnelClose(err)
 	}
